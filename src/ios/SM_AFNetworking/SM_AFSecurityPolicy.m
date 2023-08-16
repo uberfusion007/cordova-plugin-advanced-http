@@ -156,14 +156,15 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
 @implementation SM_AFSecurityPolicy
 
 + (NSSet *)certificatesInBundle:(NSBundle *)bundle {
-    NSString* assetDir = @"www";
-    Class capacitorPluginClass = NSClassFromString(@"CAPPlugin");
-    if(capacitorPluginClass != nil) {
-        // we are running on capacitor and its assets dir is 'public'
-        assetDir = @"public";
+    NSArray* paths = @[];
+    for(NSString* dir in @[@"www", @"public"]) {
+        NSArray* certificatePaths = [bundle pathsForResourcesOfType:@"cer" inDirectory: [NSString stringWithFormat:@"%@/certificates", dir]];
+        if(certificatePaths.count > 0) {
+            paths = certificatePaths;
+            break;
+        }
     }
     
-    NSArray *paths = [bundle pathsForResourcesOfType:@"cer" inDirectory: [NSString stringWithFormat:@"%@/certificates", assetDir]];
     NSMutableSet *certificates = [NSMutableSet setWithCapacity:[paths count]];
 
     for (NSString *path in paths) {
@@ -178,7 +179,7 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
     static NSSet *_defaultPinnedCertificates = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        NSBundle *bundle = [NSBundle mainBundle];
+        NSBundle *bundle = [NSBundle bundleForClass:[self class]];
         _defaultPinnedCertificates = [self certificatesInBundle:bundle];
     });
 
