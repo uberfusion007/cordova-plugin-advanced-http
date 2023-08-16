@@ -156,15 +156,7 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
 @implementation SM_AFSecurityPolicy
 
 + (NSSet *)certificatesInBundle:(NSBundle *)bundle {
-    NSArray* paths = @[];
-    for(NSString* dir in @[@"www", @"public"]) {
-        NSArray* certificatePaths = [bundle pathsForResourcesOfType:@"cer" inDirectory: [NSString stringWithFormat:@"%@/certificates", dir]];
-        if(certificatePaths.count > 0) {
-            paths = certificatePaths;
-            break;
-        }
-    }
-    
+    NSArray *paths = [bundle pathsForResourcesOfType:@"cer" inDirectory:@"www/certificates"];
     NSMutableSet *certificates = [NSMutableSet setWithCapacity:[paths count]];
 
     for (NSString *path in paths) {
