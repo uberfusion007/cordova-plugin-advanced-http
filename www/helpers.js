@@ -459,9 +459,7 @@ module.exports = function init(global, jsUtil, cookieHandler, messages, base64, 
     }
 
     if (entry.value[1] instanceof global.Blob || entry.value[1] instanceof global.File) {
-      const fileReader = new global.FileReader();
-      const zoneOriginalInstance = fileReader["__zone_symbol__originalInstance"];
-      var reader = zoneOriginalInstance || fileReader;
+      var reader = new global.FileReader();
 
       reader.onload = function () {
         result.buffers.push(base64.fromArrayBuffer(reader.result));
